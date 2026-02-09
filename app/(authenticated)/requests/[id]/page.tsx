@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { ArrowLeft, Calendar, User, FileText, Clock } from 'lucide-react'
 
 export default async function RequestDetailsPage({
@@ -24,11 +24,9 @@ export default async function RequestDetailsPage({
             <div className="max-w-2xl mx-auto mt-8 text-center">
                 <h1 className="text-2xl font-bold tracking-tight text-foreground">Request Not Found</h1>
                 <p className="mt-2 text-muted-foreground">The request you are looking for does not exist or you do not have permission to view it.</p>
-                <Button asChild className="mt-6">
-                    <Link href="/requests">
-                        <ArrowLeft className="mr-2 h-4 w-4" /> Back to Requests
-                    </Link>
-                </Button>
+                <Link href="/requests" className={buttonVariants() + " mt-6"}>
+                    <ArrowLeft className="mr-2 h-4 w-4" /> Back to Requests
+                </Link>
             </div>
         )
     }
@@ -44,11 +42,9 @@ export default async function RequestDetailsPage({
                         View full details of the leave request.
                     </p>
                 </div>
-                <Button variant="outline" asChild>
-                    <Link href="/requests">
-                        <ArrowLeft className="mr-2 h-4 w-4" /> Back
-                    </Link>
-                </Button>
+                <Link href="/requests" className={buttonVariants({ variant: "outline" })}>
+                    <ArrowLeft className="mr-2 h-4 w-4" /> Back
+                </Link>
             </div>
 
             <Card>

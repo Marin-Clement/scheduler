@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { ArrowLeft, FileQuestion } from 'lucide-react'
 
 export default function NotFound() {
@@ -17,11 +17,9 @@ export default function NotFound() {
                         Sorry, we couldn&apos;t find the page you&apos;re looking for. It might have been moved or deleted.
                     </p>
                 </div>
-                <Button asChild>
-                    <Link href="/dashboard">
-                        <ArrowLeft className="mr-2 h-4 w-4" /> Back to Dashboard
-                    </Link>
-                </Button>
+                <Link href="/dashboard" className={buttonVariants()}>
+                    <ArrowLeft className="mr-2 h-4 w-4" /> Back to Dashboard
+                </Link>
             </div>
         </div>
     )

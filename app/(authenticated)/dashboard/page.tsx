@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { Plus, ArrowRight, LayoutDashboard } from 'lucide-react'
 
 export default async function DashboardPage() {
@@ -23,11 +23,9 @@ export default async function DashboardPage() {
                     <h1 className="text-3xl font-bold tracking-tight text-gray-900">Dashboard</h1>
                     <p className="text-muted-foreground mt-1">Welcome back, check your leave status.</p>
                 </div>
-                <Button asChild>
-                    <Link href="/requests/new">
-                        <Plus className="mr-2 h-4 w-4" /> New Request
-                    </Link>
-                </Button>
+                <Link href="/requests/new" className={buttonVariants()}>
+                    <Plus className="mr-2 h-4 w-4" /> New Request
+                </Link>
             </div>
 
             {!profile && (
@@ -83,11 +81,12 @@ export default async function DashboardPage() {
             <div>
                 <div className="flex items-center justify-between mb-4">
                     <h2 className="text-lg font-semibold text-foreground">Recent Requests</h2>
-                    <Button variant="ghost" size="sm" asChild>
-                        <Link href="/requests" className="text-muted-foreground">
-                            View all <ArrowRight className="ml-2 h-4 w-4" />
-                        </Link>
-                    </Button>
+                    <Link
+                        href="/requests"
+                        className={buttonVariants({ variant: "ghost", size: "sm" }) + " text-muted-foreground"}
+                    >
+                        View all <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
                 </div>
 
                 <Card>
@@ -128,9 +127,12 @@ export default async function DashboardPage() {
                                                 </Badge>
                                             </td>
                                             <td className="p-4 align-middle text-right">
-                                                <Button variant="ghost" size="sm" asChild>
-                                                    <Link href={`/requests/${request.id}`}>View</Link>
-                                                </Button>
+                                                <Link
+                                                    href={`/requests/${request.id}`}
+                                                    className={buttonVariants({ variant: "ghost", size: "sm" })}
+                                                >
+                                                    View
+                                                </Link>
                                             </td>
                                         </tr>
                                     ))

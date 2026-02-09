@@ -2,7 +2,7 @@ import { createClient } from '@/utils/supabase/server'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { Plus, ListTodo } from 'lucide-react'
 
 async function getRequests() {
@@ -38,11 +38,9 @@ export default async function RequestsPage() {
                         Track and manage your leave requests.
                     </p>
                 </div>
-                <Button asChild>
-                    <Link href="/requests/new">
-                        <Plus className="mr-2 h-4 w-4" /> New Request
-                    </Link>
-                </Button>
+                <Link href="/requests/new" className={buttonVariants()}>
+                    <Plus className="mr-2 h-4 w-4" /> New Request
+                </Link>
             </div>
 
             <Card>
@@ -92,9 +90,12 @@ export default async function RequestsPage() {
                                                 </Badge>
                                             </td>
                                             <td className="p-4 align-middle text-right">
-                                                <Button variant="ghost" size="sm" asChild>
-                                                    <Link href={`/requests/${request.id}`}>View</Link>
-                                                </Button>
+                                                <Link
+                                                    href={`/requests/${request.id}`}
+                                                    className={buttonVariants({ variant: "ghost", size: "sm" })}
+                                                >
+                                                    View
+                                                </Link>
                                             </td>
                                         </tr>
                                     ))
