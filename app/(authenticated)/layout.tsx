@@ -26,12 +26,22 @@ export default async function AuthenticatedLayout({
         redirect('/login')
     }
 
+    const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single()
+
     const navigation = [
         { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
         { name: 'My Requests', href: '/requests', icon: ListTodo },
         { name: 'Calendar', href: '/calendar', icon: CalendarDays },
         { name: 'Team', href: '/team', icon: Users },
     ]
+
+    if (profile && ['hr', 'admin'].includes(profile.role)) {
+        navigation.push({ name: 'HR', href: '/hr', icon: Users }) // Reusing Users icon or finding another one
+    }
 
     return (
         <div className="flex h-screen bg-gray-50">

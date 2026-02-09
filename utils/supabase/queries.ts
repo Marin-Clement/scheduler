@@ -204,3 +204,33 @@ export const getLeaveTypes = cache(async (orgId: string) => {
   }
   return data
 })
+
+export const getAllOrganizationRequests = cache(async (orgId: string, status: 'pending' | 'approved' | 'rejected' = 'pending') => {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('leave_requests')
+    .select(`
+      *,
+      leave_types (
+        name,
+        code,
+        color
+      ),
+      profiles!leave_requests_profile_id_fkey (
+        first_name,
+        last_name,
+        email,
+        role,
+        avatar_url
+      )
+    `)
+    .eq('org_id', orgId)
+    .eq('status', status)
+    .order('created_at', { ascending: true })
+
+  if (error) {
+    console.error('Error fetching org requests:', error)
+    return []
+  }
+  return data
+})

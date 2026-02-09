@@ -9,6 +9,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { AddBalanceDialog } from '@/components/add-balance-dialog'
 
+import { HrRequestsList } from '@/components/hr-requests-list'
+
 export default async function HRPage() {
     const user = await getUser()
     if (!user) {
@@ -35,8 +37,10 @@ export default async function HRPage() {
         <div className="space-y-8">
             <div className="space-y-2">
                 <Text variant="h2">HR Management</Text>
-                <Text variant="lead">Manage employee records and leave balances.</Text>
+                <Text variant="lead">Manage employee records, leave balances, and requests.</Text>
             </div>
+
+            <HrRequestsList orgId={currentUserProfile.org_id} userRole={currentUserProfile.role} />
 
             <Card>
                 <CardHeader>
