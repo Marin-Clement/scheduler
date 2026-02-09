@@ -5,6 +5,10 @@ import { Text } from '@/components/ui/text'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select } from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Switch } from '@/components/ui/switch'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 
 export default function DesignSystemPage() {
     return (
@@ -58,7 +62,7 @@ export default function DesignSystemPage() {
 
             <section className="space-y-4">
                 <Text variant="h2">Form Elements</Text>
-                <div className="grid max-w-sm gap-4 border p-4 rounded-lg">
+                <div className="grid max-w-sm gap-6 border p-4 rounded-lg">
                     <div className="space-y-2">
                         <Label htmlFor="email">Email Label</Label>
                         <Input type="email" id="email" placeholder="Email input" />
@@ -69,6 +73,31 @@ export default function DesignSystemPage() {
                             <option>Option 1</option>
                             <option>Option 2</option>
                         </Select>
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="message">Textarea Label</Label>
+                        <Textarea id="message" placeholder="Type your message here." />
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        <Checkbox id="terms" />
+                        <Label htmlFor="terms">Accept terms and conditions (Checkbox)</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        <Switch id="airplane-mode" />
+                        <Label htmlFor="airplane-mode">Airplane Mode (Switch)</Label>
+                    </div>
+                    <div className="space-y-2">
+                        <Label>Radio Group</Label>
+                        <RadioGroup defaultValue="option-one">
+                            <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="option-one" id="option-one" />
+                                <Label htmlFor="option-one">Option One</Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="option-two" id="option-two" />
+                                <Label htmlFor="option-two">Option Two</Label>
+                            </div>
+                        </RadioGroup>
                     </div>
                 </div>
             </section>
