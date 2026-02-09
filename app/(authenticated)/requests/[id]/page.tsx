@@ -1,10 +1,11 @@
-import { getRequest, getUser } from '@/utils/supabase/queries'
+import { getRequest, getUser, getProfile } from '@/utils/supabase/queries'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { ArrowLeft, Calendar, User, FileText, Clock } from 'lucide-react'
+import { RequestActions } from '@/components/request-actions'
 
 export default async function RequestDetailsPage({
     params,
@@ -18,6 +19,7 @@ export default async function RequestDetailsPage({
     }
 
     const request = await getRequest(id)
+    const currentUserProfile = await getProfile(user.id)
 
     if (!request) {
         return (
@@ -63,12 +65,19 @@ export default async function RequestDetailsPage({
                                 </p>
                             </div>
                         </div>
-                        <Badge variant={
-                            request.status === 'approved' ? 'success' :
-                                request.status === 'rejected' ? 'destructive' : 'warning'
-                        } className="text-sm px-3 py-1">
-                            {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
-                        </Badge>
+                        <div className="flex items-center gap-3">
+                            <RequestActions
+                                requestId={request.id}
+                                currentStatus={request.status}
+                                userRole={currentUserProfile?.role || 'employee'}
+                            />
+                            <Badge variant={
+                                request.status === 'approved' ? 'success' :
+                                    request.status === 'rejected' ? 'destructive' : 'warning'
+                            } className="text-sm px-3 py-1">
+                                {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+                            </Badge>
+                        </div>
                     </div>
                 </CardHeader>
                 <CardContent className="px-6 py-6 space-y-6">
