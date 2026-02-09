@@ -234,3 +234,81 @@ export const getAllOrganizationRequests = cache(async (orgId: string, status: 'p
   }
   return data
 })
+
+export const getAllEmployeesWithBalances = cache(async (orgId: string) => {
+  const supabase = await createClient()
+  
+  // Get all employees
+  const { data: employees, error: empError } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('org_id', orgId)
+    .order('last_name', { ascending: true })
+
+  if (empError || !employees) {
+    console.error('Error fetching employees:', empError)
+    return []
+  }
+
+  // Get all balances for the org
+  const { data: balances, error: balError } = await supabase
+    .from('leave_balances')
+    .select(`
+      *,
+      leave_types (
+        id,
+        name,
+        code,
+        color
+      )
+    `)
+    .eq('org_id', orgId)
+
+  if (balError) {
+    console.error('Error fetching balances:', balError)
+  }
+
+  // Join balances to employees
+  return employees.map(emp => ({
+    ...emp,
+    balances: (balances || []).filter((b: any) => b.profile_id === emp.id)
+  }))
+})
+
+export const getRemoteWorkPolicies = cache(async (orgId: string) => {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('remote_work_policies')
+    .select(`
+      *,
+      profiles (
+        id,
+        first_name,
+        last_name
+      )
+    `)
+    .eq('org_id', orgId)
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    console.error('Error fetching remote work policies:', error)
+    return []
+  }
+  return data
+})
+
+export const getOrgLeaveSettings = cache(async (orgId: string) => {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('leave_types')
+    .select('*')
+    .eq('org_id', orgId)
+    .order('name', { ascending: true })
+
+  if (error) {
+    console.error('Error fetching leave settings:', error)
+    return []
+  }
+  return data
+})
+

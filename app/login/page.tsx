@@ -1,8 +1,9 @@
-import { login, signup, signInWithGoogle } from '../auth/actions'
+import { login, signup, signInWithGoogle, signInWithMagicLink } from '../auth/actions'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { CalendarDays, Mail } from 'lucide-react'
+import { CalendarDays, Sparkles } from 'lucide-react'
+import { GoogleIcon } from '@/components/icons/google'
 
 export default async function LoginPage({
     searchParams,
@@ -70,6 +71,10 @@ export default async function LoginPage({
                                 <Button variant="outline" formAction={signup}>
                                     Sign Up
                                 </Button>
+                                <Button variant="secondary" formAction={signInWithMagicLink}>
+                                    <Sparkles className="mr-2 h-4 w-4" />
+                                    Sign In with Magic Link
+                                </Button>
                             </div>
 
                             {params?.message && (
@@ -92,7 +97,7 @@ export default async function LoginPage({
 
                         <form action={signInWithGoogle}>
                             <Button variant="outline" type="submit" className="w-full">
-                                <Mail className="mr-2 h-4 w-4" />
+                                <GoogleIcon className="mr-2 h-4 w-4" />
                                 Google
                             </Button>
                         </form>
