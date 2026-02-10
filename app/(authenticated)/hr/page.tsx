@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Text } from '@/components/ui/text'
 import { Badge } from '@/components/ui/badge'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 import Link from 'next/link'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { AddBalanceDialog } from '@/components/add-balance-dialog'
@@ -22,10 +22,10 @@ export default async function HRPage() {
     if (!['hr', 'admin'].includes(currentUserProfile?.role || '')) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-4">
-                <Text variant="h2">Access Denied</Text>
-                <Text variant="muted">You do not have permission to view this page.</Text>
+                <Text variant="h2">Accès refusé</Text>
+                <Text variant="muted">Vous n'avez pas la permission de voir cette page.</Text>
                 <Link href="/dashboard" className={buttonVariants({ variant: "outline" })}>
-                    Return to Dashboard
+                    Retour au tableau de bord
                 </Link>
             </div>
         )
@@ -41,24 +41,24 @@ export default async function HRPage() {
     return (
         <div className="space-y-8">
             <div className="space-y-2">
-                <Text variant="h2">HR Management</Text>
-                <Text variant="lead">Manage employee records, leave balances, and requests.</Text>
+                <Text variant="h2">Gestion RH</Text>
+                <Text variant="lead">Gérez les employés, les soldes de congés et les demandes.</Text>
             </div>
 
             <HrRequestsList orgId={currentUserProfile.org_id} userRole={currentUserProfile.role} />
 
             <Card>
                 <CardHeader>
-                    <CardTitle>Employees Directory ({employees.length})</CardTitle>
+                    <CardTitle>Annuaire des employés ({employees.length})</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Employee</TableHead>
-                                <TableHead>Role</TableHead>
-                                <TableHead>Balances</TableHead>
-                                <TableHead>Status</TableHead>
+                                <TableHead>Employé</TableHead>
+                                <TableHead>Rôle</TableHead>
+                                <TableHead>Soldes</TableHead>
+                                <TableHead>Statut</TableHead>
                                 <TableHead className="text-right">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -84,7 +84,7 @@ export default async function HRPage() {
                                     </TableCell>
                                     <TableCell>
                                         <Badge variant={employee.is_active ? 'success' : 'secondary'}>
-                                            {employee.is_active ? 'Active' : 'Inactive'}
+                                            {employee.is_active ? 'Actif' : 'Inactif'}
                                         </Badge>
                                     </TableCell>
                                     <TableCell className="text-right">
@@ -115,4 +115,3 @@ export default async function HRPage() {
         </div>
     )
 }
-

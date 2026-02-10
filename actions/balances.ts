@@ -6,11 +6,16 @@ import { revalidatePath } from 'next/cache'
 export async function addBalance(formData: FormData) {
     const profileId = formData.get('profileId') as string
     const leaveTypeId = formData.get('leaveTypeId') as string
-    const amount = parseFloat(formData.get('amount') as string)
+    const amountStr = formData.get('amount') as string
     const path = formData.get('path') as string
 
-    if (!profileId || !leaveTypeId || isNaN(amount)) {
-        return { error: 'Invalid input' }
+    if (!profileId || !leaveTypeId) {
+        return { error: 'Données manquantes' }
+    }
+
+    const amount = parseFloat(amountStr)
+    if (!amountStr || isNaN(amount)) {
+        return { error: 'Veuillez entrer un montant valide' }
     }
 
     const supabase = await createClient()
@@ -49,13 +54,13 @@ export async function addBalance(formData: FormData) {
                 })
             error = insertError
         } else {
-            return { error: 'Profile not found' }
+            return { error: 'Profil introuvable' }
         }
     }
 
     if (error) {
         console.error('Error updating balance:', error)
-        return { error: 'Failed to update balance' }
+        return { error: 'Échec de la mise à jour du solde' }
     }
 
     revalidatePath(path)
@@ -65,11 +70,16 @@ export async function addBalance(formData: FormData) {
 export async function updateMonthlyIncrement(formData: FormData) {
     const profileId = formData.get('profileId') as string
     const leaveTypeId = formData.get('leaveTypeId') as string
-    const increment = parseFloat(formData.get('increment') as string)
+    const incrementStr = formData.get('increment') as string
     const path = formData.get('path') as string
 
-    if (!profileId || !leaveTypeId || isNaN(increment)) {
-        return { error: 'Invalid input' }
+    if (!profileId || !leaveTypeId) {
+        return { error: 'Données manquantes' }
+    }
+
+    const increment = parseFloat(incrementStr)
+    if (!incrementStr || isNaN(increment)) {
+        return { error: 'Veuillez entrer un nombre valide' }
     }
 
     const supabase = await createClient()
@@ -108,13 +118,13 @@ export async function updateMonthlyIncrement(formData: FormData) {
                 })
             error = insertError
         } else {
-            return { error: 'Profile not found' }
+            return { error: 'Profil introuvable' }
         }
     }
 
     if (error) {
         console.error('Error updating monthly increment:', error)
-        return { error: 'Failed to update monthly increment' }
+        return { error: 'Échec de la mise à jour' }
     }
 
     revalidatePath(path)
@@ -123,11 +133,16 @@ export async function updateMonthlyIncrement(formData: FormData) {
 
 export async function updateDefaultMonthlyIncrement(formData: FormData) {
     const leaveTypeId = formData.get('leaveTypeId') as string
-    const increment = parseFloat(formData.get('increment') as string)
+    const incrementStr = formData.get('increment') as string
     const path = formData.get('path') as string
 
-    if (!leaveTypeId || isNaN(increment)) {
-        return { error: 'Invalid input' }
+    if (!leaveTypeId) {
+        return { error: 'Type de congé manquant' }
+    }
+
+    const increment = parseFloat(incrementStr)
+    if (!incrementStr || isNaN(increment)) {
+        return { error: 'Veuillez entrer un nombre valide' }
     }
 
     const supabase = await createClient()
@@ -135,14 +150,14 @@ export async function updateDefaultMonthlyIncrement(formData: FormData) {
     const { error } = await supabase
         .from('leave_types')
         .update({
-            default_monthly_increment: increment,
-            updated_at: new Date().toISOString()
+            default_monthly_increment: increment
         })
         .eq('id', leaveTypeId)
 
     if (error) {
         console.error('Error updating default increment:', error)
-        return { error: 'Failed to update default increment' }
+        // Show actual error for debugging
+        return { error: `Erreur: ${error.message || error.code || 'Erreur inconnue'}` }
     }
 
     revalidatePath(path)
@@ -152,11 +167,16 @@ export async function updateDefaultMonthlyIncrement(formData: FormData) {
 export async function bulkUpdateMonthlyIncrement(formData: FormData) {
     const orgId = formData.get('orgId') as string
     const leaveTypeId = formData.get('leaveTypeId') as string
-    const increment = parseFloat(formData.get('increment') as string)
+    const incrementStr = formData.get('increment') as string
     const path = formData.get('path') as string
 
-    if (!orgId || !leaveTypeId || isNaN(increment)) {
-        return { error: 'Invalid input' }
+    if (!orgId || !leaveTypeId) {
+        return { error: 'Données manquantes' }
+    }
+
+    const increment = parseFloat(incrementStr)
+    if (!incrementStr || isNaN(increment)) {
+        return { error: 'Veuillez entrer un nombre valide' }
     }
 
     const supabase = await createClient()
@@ -168,7 +188,7 @@ export async function bulkUpdateMonthlyIncrement(formData: FormData) {
         .eq('org_id', orgId)
 
     if (!profiles || profiles.length === 0) {
-        return { error: 'No profiles found' }
+        return { error: 'Aucun employé trouvé' }
     }
 
     // For each profile, update or create balance record
@@ -201,4 +221,3 @@ export async function bulkUpdateMonthlyIncrement(formData: FormData) {
     revalidatePath(path)
     return { success: true }
 }
-

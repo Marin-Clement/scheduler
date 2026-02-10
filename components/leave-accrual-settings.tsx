@@ -6,9 +6,10 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
+import { Text } from '@/components/ui/text'
 import { updateDefaultMonthlyIncrement, bulkUpdateMonthlyIncrement } from '@/actions/balances'
 import { useFormStatus } from 'react-dom'
-import { Settings, Users } from 'lucide-react'
+import { Settings, Users, Check } from 'lucide-react'
 
 interface LeaveType {
     id: string
@@ -27,7 +28,7 @@ function SubmitButton({ children }: { children: React.ReactNode }) {
     const { pending } = useFormStatus()
     return (
         <Button type="submit" size="sm" disabled={pending}>
-            {pending ? 'Saving...' : children}
+            {pending ? '...' : children}
         </Button>
     )
 }
@@ -41,7 +42,7 @@ export function LeaveAccrualSettings({ leaveTypes, orgId }: LeaveAccrualSettings
         if (result.error) {
             setMessage({ type: 'error', text: result.error })
         } else {
-            setMessage({ type: 'success', text: 'Default increment updated!' })
+            setMessage({ type: 'success', text: 'Défaut mis à jour' })
         }
         setTimeout(() => setMessage(null), 3000)
     }
@@ -53,103 +54,95 @@ export function LeaveAccrualSettings({ leaveTypes, orgId }: LeaveAccrualSettings
         if (result.error) {
             setMessage({ type: 'error', text: result.error })
         } else {
-            setMessage({ type: 'success', text: 'Applied to all employees!' })
+            setMessage({ type: 'success', text: 'Appliqué à tous les employés' })
         }
         setTimeout(() => setMessage(null), 3000)
     }
 
     return (
         <Card>
-            <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                    <Settings className="h-5 w-5" />
-                    Leave Accrual Settings
+            <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                    <Settings className="h-4 w-4" />
+                    Cumul mensuel des congés
                 </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
                 {message && (
-                    <div className={`p-2 rounded text-sm ${
+                    <div className={`p-2 rounded-md text-sm ${
                         message.type === 'success' 
-                            ? 'bg-green-50 text-green-700 border border-green-200' 
-                            : 'bg-red-50 text-red-700 border border-red-200'
+                            ? 'bg-green-100 text-green-700 border border-green-200' 
+                            : 'bg-red-100 text-red-700 border border-red-200'
                     }`}>
                         {message.text}
                     </div>
                 )}
 
-                <div className="space-y-4">
-                    {leaveTypes.map((leaveType) => (
-                        <div 
-                            key={leaveType.id} 
-                            className="p-4 border rounded-lg space-y-3"
-                        >
-                            <div className="flex items-center justify-between">
-                                <Badge
-                                    variant="outline"
-                                    style={{
-                                        borderColor: leaveType.color,
-                                        color: leaveType.color,
-                                        backgroundColor: leaveType.color ? `${leaveType.color}15` : 'transparent'
-                                    }}
-                                >
-                                    {leaveType.name} ({leaveType.code})
-                                </Badge>
-                                <span className="text-sm text-muted-foreground">
-                                    Current default: {leaveType.default_monthly_increment ?? 0} days/month
-                                </span>
-                            </div>
-
-                            <div className="grid gap-4 sm:grid-cols-2">
-                                {/* Update default */}
-                                <form action={handleDefaultUpdate} className="space-y-2">
-                                    <input type="hidden" name="leaveTypeId" value={leaveType.id} />
-                                    <Label htmlFor={`default-${leaveType.id}`} className="text-xs">
-                                        Set Default Monthly Increment
-                                    </Label>
-                                    <div className="flex gap-2">
-                                        <Input
-                                            id={`default-${leaveType.id}`}
-                                            name="increment"
-                                            type="number"
-                                            step="0.25"
-                                            min="0"
-                                            placeholder="e.g., 2.5"
-                                            className="flex-1"
-                                            defaultValue={leaveType.default_monthly_increment ?? ''}
+                {leaveTypes.length === 0 ? (
+                    <Text variant="muted">Aucun type de congé configuré.</Text>
+                ) : (
+                    <div className="space-y-4">
+                        {leaveTypes.map((leaveType) => (
+                            <div key={leaveType.id} className="p-4 border border-border rounded-lg bg-white">
+                                {/* Header with name and current value */}
+                                <div className="flex items-center justify-between mb-3">
+                                    <div className="flex items-center gap-2">
+                                        <div 
+                                            className="w-3 h-3 rounded-full" 
+                                            style={{ backgroundColor: leaveType.color }}
                                         />
-                                        <SubmitButton>Save</SubmitButton>
+                                        <span className="font-medium">{leaveType.name}</span>
+                                        <Badge variant="outline" className="text-xs">
+                                            {leaveType.code}
+                                        </Badge>
                                     </div>
-                                </form>
+                                    <div className="flex items-center gap-1 px-2 py-1 bg-primary/10 rounded text-primary font-semibold text-sm">
+                                        <Check className="h-3 w-3" />
+                                        {leaveType.default_monthly_increment ?? 0} j/mois
+                                    </div>
+                                </div>
 
-                                {/* Bulk apply */}
-                                <form action={handleBulkUpdate} className="space-y-2">
-                                    <input type="hidden" name="leaveTypeId" value={leaveType.id} />
-                                    <Label htmlFor={`bulk-${leaveType.id}`} className="text-xs flex items-center gap-1">
-                                        <Users className="h-3 w-3" />
-                                        Apply to All Employees
-                                    </Label>
-                                    <div className="flex gap-2">
-                                        <Input
-                                            id={`bulk-${leaveType.id}`}
-                                            name="increment"
-                                            type="number"
-                                            step="0.25"
-                                            min="0"
-                                            placeholder="e.g., 2.5"
-                                            className="flex-1"
-                                        />
-                                        <SubmitButton>Apply All</SubmitButton>
-                                    </div>
-                                </form>
+                                {/* Forms */}
+                                <div className="grid grid-cols-2 gap-3">
+                                    <form action={handleDefaultUpdate} className="space-y-1">
+                                        <input type="hidden" name="leaveTypeId" value={leaveType.id} />
+                                        <Label className="text-xs text-muted-foreground">
+                                            Modifier le défaut mensuel
+                                        </Label>
+                                        <div className="flex gap-1">
+                                            <Input
+                                                name="increment"
+                                                type="number"
+                                                step="0.25"
+                                                min="0"
+                                                placeholder={String(leaveType.default_monthly_increment ?? 0)}
+                                                className="h-8 text-sm"
+                                            />
+                                            <SubmitButton>OK</SubmitButton>
+                                        </div>
+                                    </form>
+
+                                    <form action={handleBulkUpdate} className="space-y-1">
+                                        <input type="hidden" name="leaveTypeId" value={leaveType.id} />
+                                        <Label className="text-xs text-muted-foreground flex items-center gap-1">
+                                            <Users className="h-3 w-3" /> Appliquer à tous
+                                        </Label>
+                                        <div className="flex gap-1">
+                                            <Input
+                                                name="increment"
+                                                type="number"
+                                                step="0.25"
+                                                min="0"
+                                                placeholder="Jours"
+                                                className="h-8 text-sm"
+                                            />
+                                            <SubmitButton>OK</SubmitButton>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
-
-                {leaveTypes.length === 0 && (
-                    <p className="text-muted-foreground text-sm text-center py-4">
-                        No leave types configured. Create leave types first.
-                    </p>
+                        ))}
+                    </div>
                 )}
             </CardContent>
         </Card>

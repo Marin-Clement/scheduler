@@ -4,19 +4,23 @@ import { createClient } from '@/utils/supabase/server'
 import { revalidatePath } from 'next/cache'
 
 type PolicyType = 'flexible' | 'fixed'
-type DayOfWeek = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday'
 
 export async function createRemoteWorkPolicy(formData: FormData) {
     const orgId = formData.get('orgId') as string
     const profileId = formData.get('profileId') as string | null
     const policyType = formData.get('policyType') as PolicyType
-    const daysPerWeek = parseInt(formData.get('daysPerWeek') as string)
+    const daysPerWeekStr = formData.get('daysPerWeek') as string
     const fixedDaysRaw = formData.get('fixedDays') as string | null
     const isMandatory = formData.get('isMandatory') === 'true'
     const path = formData.get('path') as string
 
-    if (!orgId || !policyType || isNaN(daysPerWeek)) {
-        return { error: 'Invalid input' }
+    if (!orgId || !policyType) {
+        return { error: 'Données manquantes' }
+    }
+
+    const daysPerWeek = parseInt(daysPerWeekStr)
+    if (!daysPerWeekStr || isNaN(daysPerWeek)) {
+        return { error: 'Veuillez entrer un nombre de jours valide' }
     }
 
     const fixedDays = fixedDaysRaw ? fixedDaysRaw.split(',').filter(Boolean) : null
@@ -36,7 +40,7 @@ export async function createRemoteWorkPolicy(formData: FormData) {
 
     if (error) {
         console.error('Error creating remote work policy:', error)
-        return { error: 'Failed to create policy' }
+        return { error: 'Échec de la création de la politique' }
     }
 
     revalidatePath(path)
@@ -52,7 +56,7 @@ export async function updateRemoteWorkPolicy(formData: FormData) {
     const path = formData.get('path') as string
 
     if (!policyId) {
-        return { error: 'Policy ID required' }
+        return { error: 'ID de politique manquant' }
     }
 
     const supabase = await createClient()
@@ -70,7 +74,7 @@ export async function updateRemoteWorkPolicy(formData: FormData) {
 
     if (error) {
         console.error('Error updating remote work policy:', error)
-        return { error: 'Failed to update policy' }
+        return { error: 'Échec de la mise à jour' }
     }
 
     revalidatePath(path)
@@ -82,7 +86,7 @@ export async function deleteRemoteWorkPolicy(formData: FormData) {
     const path = formData.get('path') as string
 
     if (!policyId) {
-        return { error: 'Policy ID required' }
+        return { error: 'ID de politique manquant' }
     }
 
     const supabase = await createClient()
@@ -94,7 +98,7 @@ export async function deleteRemoteWorkPolicy(formData: FormData) {
 
     if (error) {
         console.error('Error deleting remote work policy:', error)
-        return { error: 'Failed to delete policy' }
+        return { error: 'Échec de la suppression' }
     }
 
     revalidatePath(path)
@@ -104,13 +108,18 @@ export async function deleteRemoteWorkPolicy(formData: FormData) {
 export async function applyPolicyToAllUsers(formData: FormData) {
     const orgId = formData.get('orgId') as string
     const policyType = formData.get('policyType') as PolicyType
-    const daysPerWeek = parseInt(formData.get('daysPerWeek') as string)
+    const daysPerWeekStr = formData.get('daysPerWeek') as string
     const fixedDaysRaw = formData.get('fixedDays') as string | null
     const isMandatory = formData.get('isMandatory') === 'true'
     const path = formData.get('path') as string
 
-    if (!orgId || !policyType || isNaN(daysPerWeek)) {
-        return { error: 'Invalid input' }
+    if (!orgId || !policyType) {
+        return { error: 'Données manquantes' }
+    }
+
+    const daysPerWeek = parseInt(daysPerWeekStr)
+    if (!daysPerWeekStr || isNaN(daysPerWeek)) {
+        return { error: 'Veuillez entrer un nombre de jours valide' }
     }
 
     const fixedDays = fixedDaysRaw ? fixedDaysRaw.split(',').filter(Boolean) : null
@@ -138,7 +147,7 @@ export async function applyPolicyToAllUsers(formData: FormData) {
 
     if (error) {
         console.error('Error applying policy to all users:', error)
-        return { error: 'Failed to apply policy' }
+        return { error: 'Échec de l\'application de la politique' }
     }
 
     revalidatePath(path)

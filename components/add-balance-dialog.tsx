@@ -26,14 +26,15 @@ interface AddBalanceDialogProps {
 export function AddBalanceDialog({ profileId, profileName, leaveTypes }: AddBalanceDialogProps) {
     const [open, setOpen] = useState(false)
     const [isPending, startTransition] = useTransition()
+    const [error, setError] = useState<string | null>(null)
 
     async function onSubmit(formData: FormData) {
         const res = await addBalance(formData)
         if (res?.success) {
             setOpen(false)
+            setError(null)
         } else {
-            // Handle error (could add toast here)
-            console.error(res?.error)
+            setError(res?.error || 'Erreur inconnue')
         }
     }
 
@@ -41,7 +42,7 @@ export function AddBalanceDialog({ profileId, profileName, leaveTypes }: AddBala
         event.preventDefault()
         const formData = new FormData(event.currentTarget)
         formData.append('profileId', profileId)
-        formData.append('path', '/hr') // Revalidate HR page
+        formData.append('path', '/hr')
 
         startTransition(async () => {
             await onSubmit(formData)
@@ -52,21 +53,26 @@ export function AddBalanceDialog({ profileId, profileName, leaveTypes }: AddBala
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button variant="outline" size="sm">
-                    <Plus className="h-4 w-4 mr-2" /> Add Balance
+                    <Plus className="h-4 w-4 mr-2" /> Ajouter
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Add Leave Balance</DialogTitle>
+                    <DialogTitle>Ajouter des jours de congé</DialogTitle>
                     <DialogDescription>
-                        Add balance days for {profileName}.
+                        Ajouter des jours de congé pour {profileName}.
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="grid gap-4 py-4">
+                    {error && (
+                        <div className="p-2 rounded-md text-sm bg-destructive/10 text-destructive border border-destructive/20">
+                            {error}
+                        </div>
+                    )}
                     <div className="grid gap-2">
-                        <Label htmlFor="leaveTypeId">Leave Type</Label>
+                        <Label htmlFor="leaveTypeId">Type de congé</Label>
                         <Select name="leaveTypeId" required>
-                            <option value="" disabled selected>Select a leave type</option>
+                            <option value="" disabled>Sélectionner un type</option>
                             {leaveTypes.map((type) => (
                                 <option key={type.id} value={type.id}>
                                     {type.name}
@@ -75,7 +81,7 @@ export function AddBalanceDialog({ profileId, profileName, leaveTypes }: AddBala
                         </Select>
                     </div>
                     <div className="grid gap-2">
-                        <Label htmlFor="amount">Amount (Days)</Label>
+                        <Label htmlFor="amount">Nombre de jours</Label>
                         <Input
                             id="amount"
                             name="amount"
@@ -87,7 +93,7 @@ export function AddBalanceDialog({ profileId, profileName, leaveTypes }: AddBala
                     </div>
                     <DialogFooter>
                         <Button type="submit" disabled={isPending}>
-                            {isPending ? 'Saving...' : 'Save changes'}
+                            {isPending ? 'Enregistrement...' : 'Enregistrer'}
                         </Button>
                     </DialogFooter>
                 </form>

@@ -12,10 +12,10 @@ export async function HrRequestsList({ orgId, userRole }: { orgId: string, userR
         return (
             <Card>
                 <CardHeader>
-                    <CardTitle>Pending Requests</CardTitle>
+                    <CardTitle>Demandes en attente</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <Text variant="muted">No pending requests found.</Text>
+                    <Text variant="muted">Aucune demande en attente.</Text>
                 </CardContent>
             </Card>
         )
@@ -24,16 +24,16 @@ export async function HrRequestsList({ orgId, userRole }: { orgId: string, userR
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Pending Requests ({requests.length})</CardTitle>
+                <CardTitle>Demandes en attente ({requests.length})</CardTitle>
             </CardHeader>
             <CardContent>
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>Employee</TableHead>
-                            <TableHead>Leave Type</TableHead>
+                            <TableHead>Employé</TableHead>
+                            <TableHead>Type</TableHead>
                             <TableHead>Dates</TableHead>
-                            <TableHead>Duration</TableHead>
+                            <TableHead>Durée</TableHead>
                             <TableHead className="text-right">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -52,7 +52,6 @@ export async function HrRequestsList({ orgId, userRole }: { orgId: string, userR
                                         style={{
                                             borderColor: request.leave_types?.color,
                                             color: request.leave_types?.color,
-                                            backgroundColor: request.leave_types?.color ? `${request.leave_types.color}10` : 'transparent'
                                         }}
                                     >
                                         {request.leave_types?.name}
@@ -60,14 +59,13 @@ export async function HrRequestsList({ orgId, userRole }: { orgId: string, userR
                                 </TableCell>
                                 <TableCell>
                                     <div className="text-sm">
-                                        {new Date(request.start_date).toLocaleDateString()} - {new Date(request.end_date).toLocaleDateString()}
+                                        {new Date(request.start_date).toLocaleDateString('fr-FR')} - {new Date(request.end_date).toLocaleDateString('fr-FR')}
                                     </div>
                                     <div className="text-xs text-muted-foreground">
-                                        {request.start_half} - {request.end_half}
+                                        {request.start_half === 'morning' ? 'Matin' : 'Après-midi'} - {request.end_half === 'morning' ? 'Matin' : 'Après-midi'}
                                     </div>
                                 </TableCell>
                                 <TableCell>
-                                    {/* Duration calculation could be complex, omitting for now or adding helper if needed */}
                                     -
                                 </TableCell>
                                 <TableCell className="text-right">

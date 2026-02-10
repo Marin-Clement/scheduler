@@ -31,11 +31,8 @@ export function EmployeeBalancesCell({ balances }: EmployeeBalancesCellProps) {
                     style={{
                         borderColor: balance.leave_types?.color,
                         color: balance.leave_types?.color,
-                        backgroundColor: balance.leave_types?.color 
-                            ? `${balance.leave_types.color}10` 
-                            : 'transparent'
                     }}
-                    title={`${balance.leave_types?.name}: ${balance.balance} days`}
+                    title={`${balance.leave_types?.name}: ${balance.balance} jours`}
                 >
                     {balance.leave_types?.code}: {balance.balance}
                 </Badge>
@@ -48,4 +45,3 @@ export function EmployeeBalancesCell({ balances }: EmployeeBalancesCellProps) {
         </div>
     )
 }
-
