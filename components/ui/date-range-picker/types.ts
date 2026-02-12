@@ -1,16 +1,23 @@
 export interface DateRange {
-  from?: Date;
-  to?: Date;
-  fromHalfDay?: boolean; // If true, start date is PM (Afternoon)
-  toHalfDay?: boolean;   // If true, end date is AM (Morning)
+    from?: Date
+    to?: Date
+    fromHalfDay?: boolean // If true, start date is PM (Afternoon)
+    toHalfDay?: boolean // If true, end date is AM (Morning)
 }
 
-export type LeaveType = string;
+export type LeaveType = string
 
-export type DayPart = 'am' | 'pm' | 'full';
+export type DayPart = "am" | "pm" | "full"
 
 export interface LeaveRequestItem {
-  id: string; // Unique ID for keying
-  range: DateRange;
-  type: LeaveType;
+    id: string // Unique ID for keying
+    range: DateRange
+    type: LeaveType
+}
+
+export interface LeaveBalanceItem {
+    leaveTypeId: string
+    name: string
+    code?: string | null
+    balance: number
 }
