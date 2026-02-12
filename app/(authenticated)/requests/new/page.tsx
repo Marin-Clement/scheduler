@@ -40,7 +40,7 @@ export default async function NewRequestPage() {
     const leaveTypes = await getLeaveTypes()
 
     return (
-        <div className="max-w-2xl mx-auto">
+        <div className="w-full">
             <h1 className="text-2xl font-bold mb-6">New Leave Request</h1>
             <RequestForm leaveTypes={leaveTypes} />
         </div>
