@@ -6,12 +6,14 @@ type LeaveTypeRow = {
     name: string
     code: string | null
     color: string | null
+    default_monthly_increment: number | string | null
 }
 
 type LeaveBalanceRow = {
     id: string
     leave_type_id: string
     balance: number | string | null
+    monthly_increment: number | string | null
 }
 
 type TeamRequestRow = {
@@ -68,7 +70,7 @@ export const getBalances = cache(async (userId: string) => {
 
     const { data: leaveTypes, error: leaveTypesError } = await supabase
         .from("leave_types")
-        .select("id, name, code, color")
+        .select("id, name, code, color, default_monthly_increment")
         .eq("org_id", profile.org_id)
         .order("name", { ascending: true })
 
@@ -82,7 +84,7 @@ export const getBalances = cache(async (userId: string) => {
 
     const { data: balances, error: balancesError } = await supabase
         .from("leave_balances")
-        .select("id, leave_type_id, balance")
+        .select("id, leave_type_id, balance, monthly_increment")
         .eq("profile_id", userId)
 
     if (balancesError) {
@@ -104,10 +106,14 @@ export const getBalances = cache(async (userId: string) => {
             profile_id: userId,
             leave_type_id: leaveType.id,
             balance: Number(existingBalance?.balance ?? 0),
+            monthly_increment: Number(existingBalance?.monthly_increment ?? 0),
             leave_types: {
                 name: leaveType.name,
                 code: leaveType.code,
                 color: leaveType.color,
+                default_monthly_increment: Number(
+                    leaveType.default_monthly_increment ?? 0,
+                ),
             },
         }
     })
